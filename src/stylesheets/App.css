@@ -1,0 +1,38 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: sans-serif;
+  line-height: 1em;
+  font-size: 1.1rem;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.header {
+  background-color: #5d3fa1;
+  color: #ffffff;
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.content {
+  flex: 1;
+  margin: 20px;
+}
+
+.footer {
+  background-color: #5d3fa1;
+  color: #ffffff;
+  text-align: center;
+  padding: 10px;
+  border-top: 1px solid #eaeaea;
+}
+
+h1 {
+  margin-bottom: 60px;
+}
