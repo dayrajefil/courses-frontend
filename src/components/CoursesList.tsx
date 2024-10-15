@@ -1,6 +1,7 @@
-// src/components/CourseList.tsx
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Button, Alert, useToast } from '@chakra-ui/react';
 
 interface Course {
   id: number;
@@ -12,27 +13,42 @@ interface Course {
 
 const CourseList: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+  const toast = useToast();
+
+  const fetchCourses = async () => {
+    try {
+      const response = await api.get('/courses');
+      setCourses(response.data);
+    } catch (err) {
+      setError('Erro ao buscar cursos');
+    }
+  };
 
   useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const response = await api.get('/courses');
-        setCourses(response.data);
-      } catch (err) {
-        setError('Erro ao buscar cursos');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchCourses();
-  }, []);
 
-  if (loading) {
-    return <div>Carregando...</div>;
-  }
+    if (location.state?.successMessage) {
+      toast({
+        title: location.state.successMessage,
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+
+      setSuccessMessage(location.state.successMessage);
+
+      const timeoutId = setTimeout(() => {
+        setSuccessMessage(null);
+      }, 3000);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [location.state, toast, navigate, location.pathname]);
 
   if (error) {
     return <div>{error}</div>;
@@ -40,7 +56,16 @@ const CourseList: React.FC = () => {
 
   return (
     <div className='content'>
+      {successMessage && (
+        <Alert status='success' color='green'>
+          {successMessage}
+        </Alert>
+      )}
+
       <h1>Lista de Cursos</h1>
+      <Link to={`/courses/new`}>
+        <Button>Criar Curso</Button>
+      </Link>
       <div>
         {courses.map(course => (
           <div key={course.id}>
@@ -49,6 +74,9 @@ const CourseList: React.FC = () => {
             <p>{course.description}</p>
             <p>Início: {course.start_date}</p>
             <p>Término: {course.end_date}</p>
+            <Link to={`/courses/${course.id}/edit`}>
+              <Button>Editar</Button>
+            </Link>
           </div>
         ))}
       </div>
