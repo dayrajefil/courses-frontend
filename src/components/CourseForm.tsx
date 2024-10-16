@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Alert, Box, Button, Input, Textarea, useToast, Text } from '@chakra-ui/react';
+import {Alert, Box, Button, Input, Textarea, useToast, Text, VStack, HStack} from '@chakra-ui/react';
 import api from '../services/api';
 import { AxiosError } from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -98,7 +98,7 @@ const CourseForm: React.FC = () => {
         isClosable: true,
       });
 
-      navigate('/', { state: { successMessage: response.data.success } });
+      navigate('/courses', { state: { successMessage: response.data.success } });
 
     } catch (err) {
       if (err instanceof AxiosError && err.response) {
@@ -131,6 +131,12 @@ const CourseForm: React.FC = () => {
   };
 
   const handleDeleteVideo = async (videoId: number) => {
+    const confirmDelete = window.confirm("Tem certeza que deseja excluir este vídeo?");
+
+    if (!confirmDelete) {
+      return;
+    }
+
     try {
       const response = await api.delete(`courses/${courseId}/videos/${videoId}`);
       setVideos(videos.filter(video => !(video instanceof File) && video.id !== videoId));
@@ -148,15 +154,21 @@ const CourseForm: React.FC = () => {
       }
     }
   };
-  
+
   const handleDeleteCourse = async () => {
+    const confirmDelete = window.confirm("Tem certeza que deseja excluir este curso?");
+
+    if (!confirmDelete) {
+      return;
+    }
+
     try {
       const response = await api.delete(`/courses/${courseId}`);
 
       setMessage({ text: response.data.success, type: 'success' });
       setTimeout(() => setMessage(null), 3000);
 
-      navigate('/');
+      navigate('/courses');
     } catch (err) {
       if (err instanceof AxiosError && err.response) {
         const errorMessage = err.response.data.error;
@@ -168,85 +180,105 @@ const CourseForm: React.FC = () => {
       }
     }
   };
-  
 
   return (
-    <Box as="form" onSubmit={handleSubmit}>
+    <Box as="form" onSubmit={handleSubmit} p={5} maxW="md" mx="auto">
       {message && (
         <Alert status={message.type} color={message.type === 'success' ? 'green' : 'red'}>
           {message.text}
         </Alert>
       )}
 
-      <div>
-        Título
+      <VStack spacing={4} align="stretch">
+        <Box>
+        <Text>Título</Text>
         <Input
+          className="input-style"
           value={title} 
           onChange={(e) => setTitle(e.target.value)} 
+          isInvalid={!!errors.title}
         />
-        {errors.title && <div color="red">{errors.title[0]}</div>}
-      </div>
-
-      <div>
-        Descrição
-        <Textarea
-          value={description} 
-          onChange={(e) => setDescription(e.target.value)} 
-        />
-        {errors.description && <div color="red">{errors.description[0]}</div>}
-      </div>
-
-      <div>
-        Início
-        <Input
-          type="date" 
-          value={startDate} 
-          onChange={(e) => setStartDate(e.target.value)} 
-        />
-        {errors.start_date && <div color="red">{errors.start_date[0]}</div>}
-      </div>
-
-      <div>
-        Término
-        <Input
-          type="date" 
-          value={endDate} 
-          onChange={(e) => setEndDate(e.target.value)} 
-        />
-        {errors.end_date && <div color="red">{errors.end_date[0]}</div>}
-      </div>
-
-      <Input type="file" multiple accept="video/*" onChange={handleVideoChange} />
-
-      <Box>
-        <h3>Vídeos:</h3>
-        {videos.length > 0 ? (
-          videos.map((video, index) => (
-            <Box key={index} display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-              <Text>
-                {video instanceof File ? video.name : `${video.filename} - ${video.size_in_mb} MB`}
-              </Text>
-              {!(video instanceof File) && (
-                <Button onClick={() => handleDeleteVideo(video.id)}>Excluir</Button>
-              )}
-            </Box>
-          ))
-        ) : (
-          <Text>Nenhum vídeo associado a este curso.</Text>
-        )}
+        {errors.title && <Text color="red">{errors.title[0]}</Text>}
       </Box>
 
-      <Button type="submit">
-        {courseId ? 'Atualizar Curso' : 'Criar Curso'}
-      </Button>
+      <Box>
+        <Text>Início</Text>
+        <Input
+          type="date" 
+          className="input-style"
+          value={startDate} 
+          onChange={(e) => setStartDate(e.target.value)} 
+          isInvalid={!!errors.start_date}
+        />
+        {errors.start_date && <Text color="red">{errors.start_date[0]}</Text>}
+      </Box>
 
-      <Button onClick={handleDeleteCourse}>
-        Excluir Curso
-      </Button>
+      <Box>
+        <Text>Término</Text>
+        <Input
+          type="date" 
+          className="input-style"
+          value={endDate} 
+          onChange={(e) => setEndDate(e.target.value)} 
+          isInvalid={!!errors.end_date}
+        />
+        {errors.end_date && <Text color="red">{errors.end_date[0]}</Text>}
+      </Box>
 
-      <Button onClick={() => navigate('/')}>
-        Voltar para a listagem
-      </Button>
+      <Box>
+        <Text>Descrição</Text>
+        <Textarea
+          className="textarea-style"
+          value={description} 
+          onChange={(e) => setDescription(e.target.value)} 
+          isInvalid={!!errors.description}
+        />
+        {errors.description && <Text color="red">{errors.description[0]}</Text>}
+      </Box>
+
+        <Box>
+          <Text>Vídeos</Text>
+          <label className="custom-file-upload">
+            Adicionar Vídeo
+            <input type="file" multiple accept="video/*" onChange={handleVideoChange} />
+          </label>
+        </Box>
+
+        <Box>
+          {videos.length > 0 ? (
+            videos.map((video, index) => (
+              <Box key={index}>
+                <hr />
+                <HStack justify="space-between" align="center">
+                  <Text>
+                    {video instanceof File ? video.name : `${video.filename} - ${video.size_in_mb} MB`}
+                  </Text>
+                  {!(video instanceof File) && (
+                    <Button onClick={() => handleDeleteVideo(video.id)}>Apagar</Button>
+                  )}
+                </HStack>
+              </Box>
+            ))
+          ) : (
+            <Text>Nenhum vídeo associado a este curso.</Text>
+          )}
+          <hr />
+        </Box>
+
+        <HStack spacing={4} className='button-container'>
+          <Button type="submit">
+            {courseId ? 'Atualizar' : 'Criar'}
+          </Button>
+
+          <Button onClick={handleDeleteCourse}>
+            Excluir
+          </Button>
+
+          <Button onClick={() => navigate('/courses')} variant="outline">
+            Voltar
+          </Button>
+        </HStack>
+      </VStack>
     </Box>
   );
 };

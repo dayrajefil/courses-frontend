@@ -5,6 +5,8 @@ import CourseList from './CoursesList';
 import CourseForm from './CourseForm';
 import Header from './Header';
 import Footer from './Footer';
+import Homepage from './Homepage';
+import WatchCourse from './WatchCourse';
 
 const App: React.FC = () => {
   return (
@@ -13,9 +15,11 @@ const App: React.FC = () => {
         <Header />
         <div className="content">
           <Routes>
-            <Route path="/" element={<CourseList />} />
+            <Route path="/" element={<Homepage />} />
+            <Route path="/courses" element={<CourseList />} />
             <Route path="/courses/new" element={<CourseForm />} />
             <Route path="/courses/:id/edit" element={<CourseForm />} />
+            <Route path="/courses/:id" element={<WatchCourse />} />
           </Routes>
         </div>
         <Footer />

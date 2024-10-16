@@ -1,12 +1,19 @@
 // src/components/Header.tsx
 import React from 'react';
+import { Box, Flex, HStack, Link, Text } from '@chakra-ui/react';
 
-const Header: React.FC = () => {
+const Navbar = () => {
   return (
-    <header className="header">
-      <h1>Desafio Twygo</h1>
-    </header>
+    <Box className="header">
+      <Flex alignItems="center" justifyContent="space-between">
+        <Text fontSize="xl">Course</Text>
+        <HStack spacing={4}>
+          <Link color="white" href="/">Home</Link>
+          <Link color="white" href="/courses">Cursos</Link>
+        </HStack>
+      </Flex>
+    </Box>
   );
 };
 
-export default Header;
+export default Navbar;

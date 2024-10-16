@@ -1,21 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Button, Alert, useToast, Text, Box } from '@chakra-ui/react';
+import { Button, Alert, useToast, HStack } from '@chakra-ui/react';
 
 interface Course {
   id: number;
   title: string;
   description: string;
-  start_date: string;
-  end_date: string;
   total_size_in_mb: number;
-  videos?: Video[];
-}
-
-interface Video {
-  id: number;
-  size_in_mb: number;
 }
 
 const CourseList: React.FC = () => {
@@ -69,32 +61,29 @@ const CourseList: React.FC = () => {
         </Alert>
       )}
 
-      <h1>Lista de Cursos</h1>
-      <Link to={`/courses/new`}>
-        <Button>Criar Curso</Button>
-      </Link>
+      <h1>Cursos</h1>
+      <div className='button-container'>
+        <Link to={`/courses/new`}>
+          <Button>Criar Curso</Button>
+        </Link>
+      </div>
+
       <div>
         {courses.map(course => (
           <div key={course.id}>
             <hr />
             <h2>{course.title}</h2>
             <p>{course.description}</p>
-            <p>Início: {course.start_date}</p>
-            <p>Término: {course.end_date}</p>
-            <p>Tamanho total dos vídeos: {course.total_size_in_mb} MB</p>
+            <p>Tamanho dos vídeos: {course.total_size_in_mb} MB</p>
 
-            <Box>
-              <h3>Vídeos:</h3>
-              {course.videos && course.videos.map(video => (
-                <Text key={video.id}>
-                  Vídeo {video.id}: {video.size_in_mb} MB
-                </Text>
-              ))}
-            </Box>
-
-            <Link to={`/courses/${course.id}/edit`}>
-              <Button>Editar</Button>
-            </Link>
+            <HStack spacing={4} className='button-container'>
+              <Link to={`/courses/${course.id}/edit`}>
+                <Button>Editar</Button>
+              </Link>
+              <Link to={`/courses/${course.id}`}>
+                <Button colorScheme='teal'>Assistir</Button>
+              </Link>
+            </HStack>
           </div>
         ))}
       </div>
