@@ -40,7 +40,7 @@ Courses Frontend é uma aplicação desenvolvida em React com TypeScript, projet
 No arquivo .env atualize com a url que a API está rodando.
 
   ```
-  REACT_APP_API_BASE_URL=api_url
+  REACT_APP_API_BASE_URL=http://host:port
   ```
 
 4. **Inicie a aplicação:**

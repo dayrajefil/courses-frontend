@@ -44,6 +44,15 @@ div {
   overflow-wrap: break-word;
 }
 
+.hover-effect {
+  transition: background-color 0.3s ease;
+  border-radius: 8px;
+}
+
+.hover-effect:hover {
+  background-color: #ccc;
+}
+
 .button-container {
   display: flex;
   justify-content: flex-end;

@@ -66,12 +66,11 @@ const CourseList: React.FC = () => {
         <Link to={`/courses/new`}>
           <Button>Criar Curso</Button>
         </Link>
-      </div>
+      </div><br />
 
       <div>
         {courses.map(course => (
-          <div key={course.id}>
-            <hr />
+          <div key={course.id} className="hover-effect" style={{ padding: '10px' }}>
             <h2>{course.title}</h2>
             <p>{course.description}</p>
             <p>Tamanho dos vídeos: {course.total_size_in_mb} MB</p>

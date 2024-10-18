@@ -247,8 +247,7 @@ const CourseForm: React.FC = () => {
         <Box>
           {videos.length > 0 ? (
             videos.map((video, index) => (
-              <Box key={index}>
-                <hr />
+              <Box key={index} className="hover-effect">
                 <HStack justify="space-between" align="center">
                   <Text>
                     {video instanceof File ? video.name : `${video.filename} - ${video.size_in_mb} MB`}
@@ -262,7 +261,6 @@ const CourseForm: React.FC = () => {
           ) : (
             <Text>Nenhum vídeo associado a este curso.</Text>
           )}
-          <hr />
         </Box>
 
         <HStack spacing={4} className='button-container'>

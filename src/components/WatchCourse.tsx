@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Text, VStack, Button, SimpleGrid, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton } from '@chakra-ui/react';
+import { Box, Text, VStack, Button, SimpleGrid, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, HStack } from '@chakra-ui/react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import VideoPlayer from './VideoPlayer';
@@ -40,18 +40,16 @@ const WatchCourse: React.FC = () => {
   return (
     <Box p={5}>
       {course ? (
-        <VStack spacing={5} align="start">
+        <VStack align="start">
           <Text fontSize="2xl" fontWeight="bold">{course.title}</Text>
           <Text>{course.description}</Text>
 
-          <SimpleGrid columns={2} spacing={4}>
+          <SimpleGrid columns={1} width="100%">
             {course.videos.map((video: any) => (
               <Box
                 key={video.id}
-                p={3}
-                borderWidth={1}
-                borderRadius="md"
-                _hover={{ cursor: 'pointer', bg: 'gray.100' }}
+                padding={10}
+                className="hover-effect"
                 onClick={() => handleVideoSelect(video.url)}
               >
                 <Text>{video.filename} - {video.size_in_mb} MB</Text>
@@ -59,13 +57,13 @@ const WatchCourse: React.FC = () => {
             ))}
           </SimpleGrid>
 
-          <Button onClick={() => navigate('/courses')}>Voltar para a listagem</Button>
+          <HStack spacing={4} justifyContent="flex-end" width="100%"> 
+            <Button onClick={() => navigate('/courses')}>Voltar para a listagem</Button>
+          </HStack>
 
-          {/* Modal para assistir ao vídeo */}
           <Modal isOpen={isOpen} onClose={handleClose} size="full">
             <ModalOverlay />
             <ModalContent>
-              <ModalHeader>Assistindo ao Vídeo</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
                 {selectedVideo && <VideoPlayer videoUrl={selectedVideo} />}
